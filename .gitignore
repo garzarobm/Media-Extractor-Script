@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Local outputs / sample data
+extracted-docs/
+sample-data/sorted/
+
+# Local user state (presets, last-run command)
+.media-extractor/
+
+sample-data/sorted/*
+sample-data/unsorted/*
