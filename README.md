@@ -52,6 +52,8 @@ Available options:
 - `--no-preserve-tags`
 - `--preserve-structure` (mirror source folder layout under each category)
 - `--tagged-subdir [NAME]` (route any tagged file to `destination/<category>/NAME/...`; untagged files stay at `destination/<category>/...`. NAME defaults to `tagged`.)
+- `--suffix-tags` (append `_<category>_<tag1>_<tag2>...` to every destination filename. Category suffixes: audio → `_audiobyte`, video → `_video`, image → `_image`, doc → `_doc`. Example: `clip.mp4` with tags `favorite`, `archive` becomes `clip_video_favorite_archive.mp4`.)
+- `--rushes-layout` (video-editing layout: `audio`, `video`, and `images` go under `destination/rushes/{audio,video,images}/...`; `docs` go under `destination/docs/` with an mtime prefix `YYYY-MM-DD_HHMMSS_` so they sort alphanumerically by filming time.)
 - `--hooks-module path/to/hooks.py`
 - `--save-preset NAME` / `--load-preset NAME` (stored under `~/.media-extractor/presets/`)
 

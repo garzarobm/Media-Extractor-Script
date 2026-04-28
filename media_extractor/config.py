@@ -43,6 +43,8 @@ class OrganizerConfig:
     preserve_tags: bool = True
     preserve_structure: bool = False
     tagged_subdir: str | None = None
+    suffix_tags: bool = False
+    rushes_layout: bool = False
 
     def __post_init__(self) -> None:
         self.source = Path(self.source).expanduser()

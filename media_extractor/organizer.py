@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import shutil
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Any, Iterable
@@ -11,6 +12,60 @@ from .classify import FileClassifier
 from .config import CollisionPolicy, Operation, OrganizerConfig
 from .hooks import FileOperationContext, HookRegistry
 from .tags import MacOSTagManager, TagManager
+
+
+CATEGORY_SUFFIXES = {
+    "audioExt": "audiobyte",
+    "videoExt": "video",
+    "imageExt": "image",
+    "docExt": "doc",
+}
+
+# Layout used when --rushes-layout is on:
+#   3 of the 4 categories (audio, video, images) go under rushes/<sub>/
+#   the 4th category (docs) goes under docs/ with an mtime prefix on the filename.
+RUSHES_LAYOUT = {
+    "audioExt": ("rushes", "audio"),
+    "videoExt": ("rushes", "video"),
+    "imageExt": ("rushes", "images"),
+    "docExt": ("docs",),
+}
+RUSHES_TIMESTAMP_CATEGORIES = {"docExt"}
+
+
+def _file_mtime_prefix(path: Path) -> str:
+    try:
+        ts = path.stat().st_mtime
+    except OSError:
+        return ""
+    # Sortable, easy to read, alphanumerical: 2026-04-28_143205_
+    return datetime.fromtimestamp(ts).strftime("%Y-%m-%d_%H%M%S_")
+
+
+def _slugify_tag(value: object) -> str:
+    text = getattr(value, "name", None) or str(value)
+    cleaned = "".join(ch if ch.isalnum() else "-" for ch in text.strip())
+    while "--" in cleaned:
+        cleaned = cleaned.replace("--", "-")
+    return cleaned.strip("-")
+
+
+def _build_suffixed_name(filename: str, category: str, tags: list[str]) -> str:
+    stem, dot, ext = filename.rpartition(".")
+    if not dot:
+        stem, ext = filename, ""
+    parts: list[str] = []
+    category_suffix = CATEGORY_SUFFIXES.get(category)
+    if category_suffix:
+        parts.append(category_suffix)
+    for tag in tags:
+        slug = _slugify_tag(tag)
+        if slug:
+            parts.append(slug)
+    if not parts:
+        return filename
+    suffix = "_" + "_".join(parts)
+    return f"{stem}{suffix}.{ext}" if ext else f"{stem}{suffix}"
 
 
 class TransferStatus(str, Enum):
@@ -160,7 +215,10 @@ class MediaOrganizer:
 
     def _default_destination_path(self, context: FileOperationContext) -> Path:
         assert context.category is not None
-        category_root = self.config.destination / context.category
+        if self.config.rushes_layout and context.category in RUSHES_LAYOUT:
+            category_root = self.config.destination.joinpath(*RUSHES_LAYOUT[context.category])
+        else:
+            category_root = self.config.destination / context.category
         if self.config.tagged_subdir and context.tags:
             category_root = category_root / self.config.tagged_subdir
         if self.config.preserve_structure:
@@ -168,8 +226,18 @@ class MediaOrganizer:
                 relative = context.source_path.relative_to(self.config.source)
             except ValueError:
                 relative = Path(context.source_path.name)
-            return category_root / relative
-        return category_root / context.source_path.name
+            base_path = category_root / relative
+        else:
+            base_path = category_root / context.source_path.name
+        if self.config.suffix_tags:
+            base_path = base_path.with_name(
+                _build_suffixed_name(base_path.name, context.category, context.tags)
+            )
+        if self.config.rushes_layout and context.category in RUSHES_TIMESTAMP_CATEGORIES:
+            prefix = _file_mtime_prefix(context.source_path)
+            if prefix and not base_path.name.startswith(prefix):
+                base_path = base_path.with_name(prefix + base_path.name)
+        return base_path
 
     def _resolve_collision(self, destination_path: Path) -> Path | None:
         if not destination_path.exists():

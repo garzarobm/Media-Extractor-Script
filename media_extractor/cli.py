@@ -66,6 +66,25 @@ def build_parser() -> argparse.ArgumentParser:
             "--route-tag rules still take precedence when they match."
         ),
     )
+    parser.add_argument(
+        "--suffix-tags",
+        action="store_true",
+        help=(
+            "Append a category suffix and each Finder tag to every destination filename: "
+            "audio -> _audiobyte, video -> _video, image -> _image, doc -> _doc, "
+            "followed by _<tag> for each tag. Example: clip.mp4 with tags 'favorite', 'archive' "
+            "becomes clip_video_favorite_archive.mp4."
+        ),
+    )
+    parser.add_argument(
+        "--rushes-layout",
+        action="store_true",
+        help=(
+            "Use a video-editing folder layout: media (audio/video/images) goes under "
+            "destination/rushes/{audio,video,images}/... and documents go under destination/docs/. "
+            "Documents are renamed with an mtime prefix YYYY-MM-DD_HHMMSS_ so they sort alphanumerically by filming time."
+        ),
+    )
 
     tag_group = parser.add_argument_group(
         "tag rules",
@@ -253,6 +272,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         preserve_tags=not args.no_preserve_tags,
         preserve_structure=args.preserve_structure,
         tagged_subdir=args.tagged_subdir,
+        suffix_tags=args.suffix_tags,
+        rushes_layout=args.rushes_layout,
     )
 
     tag_rules = build_tag_rules(
@@ -411,6 +432,28 @@ def run_interactive_menu(parser: argparse.ArgumentParser) -> list[str]:
     ):
         name = _prompt_optional("Subfolder name for tagged files [default: tagged]") or "tagged"
         args += ["--tagged-subdir", name]
+
+    print()
+    print("Filename suffixing:")
+    print("  Adds _<category>_<tag1>_<tag2>... before the extension.")
+    print("  e.g. clip.mp4 with tags favorite, archive -> clip_video_favorite_archive.mp4")
+    if _prompt_yes_no(
+        "Append category + tag suffixes to every destination filename?",
+        default=False,
+    ):
+        args.append("--suffix-tags")
+
+    print()
+    print("Rushes layout (video-editing project):")
+    print("  audio  -> destination/rushes/audio/...")
+    print("  video  -> destination/rushes/video/...")
+    print("  images -> destination/rushes/images/...")
+    print("  docs   -> destination/docs/<YYYY-MM-DD_HHMMSS>_<filename>")
+    if _prompt_yes_no(
+        "Use the rushes/docs layout?",
+        default=False,
+    ):
+        args.append("--rushes-layout")
 
     hooks_module = _prompt_optional("Hooks module path or import name (blank for none)")
     if hooks_module:
