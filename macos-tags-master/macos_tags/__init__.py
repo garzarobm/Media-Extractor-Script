@@ -1,4 +1,6 @@
-"""A python libraty for working with macOS tags"""
+"""
+A Python library for working with macOS Finder tags.
+"""
 import sys
 
 from ._api import *

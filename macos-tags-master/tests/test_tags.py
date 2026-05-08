@@ -1,3 +1,7 @@
+"""
+Tests for the macos_tags library.
+"""
+
 from unittest.mock import call, mock_open, patch
 
 import pytest

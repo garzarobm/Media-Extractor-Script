@@ -1,3 +1,7 @@
+"""
+API for managing macOS Finder tags.
+"""
+
 from __future__ import annotations
 
 import plistlib
@@ -32,6 +36,9 @@ _ALL_TAGS_PLIST_PATH = f"{Path.home()}/Library/SyncedPreferences/com.apple.finde
 
 @unique
 class Color(Enum):
+    """
+    macOS Finder tag colors.
+    """
     NONE = 0
     GRAY = 1
     GREEN = 2
