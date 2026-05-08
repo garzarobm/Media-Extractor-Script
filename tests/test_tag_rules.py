@@ -1,3 +1,7 @@
+"""
+Tests for tag-based rules and filtering.
+"""
+
 from __future__ import annotations
 
 import tempfile
@@ -12,6 +16,9 @@ from test_media_extractor import FakeTagManager
 
 
 class TagRulesTests(unittest.TestCase):
+    """
+    Test cases for TagRules functionality.
+    """
     def _setup_tree(self, tmp_dir: str):
         root = Path(tmp_dir)
         source = root / "source"

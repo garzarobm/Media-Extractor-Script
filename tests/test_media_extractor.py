@@ -1,3 +1,7 @@
+"""
+Core tests for the media extractor.
+"""
+
 from __future__ import annotations
 
 import tempfile
@@ -10,6 +14,9 @@ from media_extractor.organizer import MediaOrganizer, TransferStatus
 
 
 class FakeTagManager:
+    """
+    Fake tag manager for testing purposes.
+    """
     def __init__(self, initial_tags: dict[Path, list[str]] | None = None) -> None:
         self.available = True
         self.reason_unavailable = None
@@ -27,6 +34,9 @@ class FakeTagManager:
 
 
 class MediaExtractorTests(unittest.TestCase):
+    """
+    Test cases for the MediaOrganizer class.
+    """
     def test_copy_preserves_tags(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             root = Path(tmp_dir)
