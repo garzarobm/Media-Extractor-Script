@@ -6,6 +6,14 @@ marp: true
 
 This project organizes images, documents, videos, and audio files from a source tree into category folders while preserving macOS Finder tags.
 
+## Quick Start
+
+Install Python 3 on macOS (and `tkinter` if you want folder-picker support).
+Run `python3 media_ext.py --source /path/to/source --destination /path/to/output --operation copy` to sort files into media categories.
+If you run `python3 media_ext.py` with no flags, the script prompts for paths and accepts `browse` to open the picker.
+You can add tag-based behavior with flags like `--require-tag favorite`, `--route-tag favorite=priority`, and `--add-tag organized`.
+Repeat your most recent run anytime with `bash ~/.media-extractor/last-run.sh`.
+
 ## What Changed
 
 - The old one-file script is now a thin entry point at `media_ext.py`.
