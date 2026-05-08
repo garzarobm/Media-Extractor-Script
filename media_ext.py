@@ -1,3 +1,7 @@
+"""
+Entry point for the media extractor tool.
+"""
+
 from __future__ import annotations
 
 from media_extractor.cli import main
