@@ -1,3 +1,7 @@
+"""
+File classification logic based on extensions.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -179,6 +183,9 @@ DEFAULT_CATEGORY_EXTENSIONS: dict[str, tuple[str, ...]] = {
 
 
 def normalize_extension(value: str | None) -> str | None:
+    """
+    Normalizes a file extension to be lowercase, stripped, and prefixed with a dot.
+    """
     if not value:
         return None
     lowered = value.lower().strip()
@@ -188,6 +195,10 @@ def normalize_extension(value: str | None) -> str | None:
 
 
 class FileClassifier:
+    """
+    Classifies files into categories based on their extensions.
+    """
+
     def __init__(
         self,
         category_extensions: Mapping[str, Iterable[str]] | None = None,
@@ -205,12 +216,22 @@ class FileClassifier:
 
     @property
     def categories(self) -> tuple[str, ...]:
+        """
+        Returns all available categories.
+        """
         return tuple(self._category_extensions.keys())
 
     def extension_of(self, path: Path) -> str | None:
+        """
+        Returns the normalized extension of the given path.
+        """
         return normalize_extension(path.suffix)
 
     def classify(self, path: Path) -> str | None:
+        """
+        Classifies the given path into a category.
+        Returns the category name or None if not recognized.
+        """
         extension = self.extension_of(path)
         if extension is None:
             return None

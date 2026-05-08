@@ -1,3 +1,7 @@
+"""
+macOS Finder tags management.
+"""
+
 from __future__ import annotations
 
 import importlib
@@ -13,6 +17,9 @@ from typing import Any, Protocol, Sequence
 
 
 class TagManager(Protocol):
+    """
+    Protocol for managing file tags.
+    """
     available: bool
     reason_unavailable: str | None
 
@@ -24,6 +31,9 @@ class TagManager(Protocol):
 
 
 class MacOSTagManager:
+    """
+    Manages macOS Finder tags, using various backends as fallbacks.
+    """
     def __init__(self) -> None:
         self.available = False
         self.reason_unavailable: str | None = None

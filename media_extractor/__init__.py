@@ -1,3 +1,10 @@
+"""
+Media Extractor Package
+
+This package provides tools for classifying, organizing, and tagging media files
+based on their extensions and metadata.
+"""
+
 from .classify import DEFAULT_CATEGORY_EXTENSIONS, FileClassifier
 from .config import CollisionPolicy, Operation, OrganizerConfig
 from .hooks import FileOperationContext, HookRegistry, load_hooks_from_module

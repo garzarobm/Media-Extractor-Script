@@ -1,3 +1,7 @@
+"""
+Extensibility system through hooks.
+"""
+
 from __future__ import annotations
 
 import importlib
@@ -31,6 +35,9 @@ HOOK_NAMES: tuple[HookName, ...] = (
 
 @dataclass
 class FileOperationContext:
+    """
+    Context for a single file operation, passed to hook handlers.
+    """
     source_path: Path
     destination_root: Path
     operation: Operation
@@ -66,6 +73,9 @@ class FileOperationContext:
 
 
 class HookRegistry:
+    """
+    Registry for hook handlers.
+    """
     def __init__(self) -> None:
         self._handlers: dict[str, list[HookHandler]] = {name: [] for name in HOOK_NAMES}
 
@@ -82,6 +92,9 @@ class HookRegistry:
 
 
 def load_hooks_from_module(reference: str) -> HookRegistry:
+    """
+    Loads hooks from a Python module or file.
+    """
     module = _load_module(reference)
     registry = HookRegistry()
 

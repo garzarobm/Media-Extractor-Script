@@ -1,3 +1,7 @@
+"""
+Configuration models for the media organizer.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -6,6 +10,9 @@ from pathlib import Path
 
 
 class Operation(str, Enum):
+    """
+    Specifies the file transfer operation.
+    """
     COPY = "copy"
     MOVE = "move"
 
@@ -20,6 +27,9 @@ class Operation(str, Enum):
 
 
 class CollisionPolicy(str, Enum):
+    """
+    Specifies how to handle file name collisions at the destination.
+    """
     SKIP = "skip"
     RENAME = "rename"
     OVERWRITE = "overwrite"
@@ -35,6 +45,9 @@ class CollisionPolicy(str, Enum):
 
 @dataclass
 class OrganizerConfig:
+    """
+    Configuration for the media organization process.
+    """
     source: Path
     destination: Path
     operation: Operation = Operation.COPY

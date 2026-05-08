@@ -1,3 +1,7 @@
+"""
+Command-line interface for the media extractor.
+"""
+
 from __future__ import annotations
 
 import argparse
@@ -15,6 +19,9 @@ from .tag_rules import build_tag_rules
 
 
 def build_parser() -> argparse.ArgumentParser:
+    """
+    Builds the command-line argument parser.
+    """
     parser = argparse.ArgumentParser(
         description="Organize media files, preserve Finder tags, and run custom hooks."
     )
@@ -228,6 +235,9 @@ def _save_last_run(args: Sequence[str]) -> Path:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    """
+    Main entry point for the command-line interface.
+    """
     parser = build_parser()
     raw_args = list(sys.argv[1:]) if argv is None else list(argv)
     if not raw_args and sys.stdin.isatty():
@@ -375,6 +385,9 @@ def _pick_directory(label: str, default: Path) -> Path:
 
 
 def run_interactive_menu(parser: argparse.ArgumentParser) -> list[str]:
+    """
+    Runs an interactive menu to collect configuration when no flags are provided.
+    """
     print("=" * 60)
     print("Media Extractor - interactive mode")
     print("=" * 60)

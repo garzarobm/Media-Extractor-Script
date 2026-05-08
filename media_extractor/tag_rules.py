@@ -1,3 +1,7 @@
+"""
+Rule-based filtering and transformation based on file tags.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -7,6 +11,9 @@ from .hooks import FileOperationContext, HookRegistry
 
 
 def tag_name(tag: Any) -> str:
+    """
+    Returns the name of a tag, handling different tag objects.
+    """
     name = getattr(tag, "name", None)
     if name is not None:
         return str(name)
@@ -31,6 +38,9 @@ def parse_mapping(value: str, *, flag: str) -> tuple[str, str]:
 
 @dataclass
 class TagRules:
+    """
+    Set of rules to filter, route, rename, and mutate files based on tags.
+    """
     require_tags: tuple[str, ...] = ()
     require_any_tags: tuple[str, ...] = ()
     exclude_tags: tuple[str, ...] = ()
@@ -167,6 +177,9 @@ def build_tag_rules(
     remove_tags: Sequence[str] = (),
     clear_tags: bool = False,
 ) -> TagRules:
+    """
+    Builds a TagRules instance from raw string sequences.
+    """
     if require_untagged and require_tagged:
         raise ValueError("--require-untagged and --require-tagged cannot be combined")
     return TagRules(

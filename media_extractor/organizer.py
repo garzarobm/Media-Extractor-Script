@@ -1,3 +1,7 @@
+"""
+Core organization logic for media files.
+"""
+
 from __future__ import annotations
 
 import os
@@ -69,6 +73,9 @@ def _build_suffixed_name(filename: str, category: str, tags: list[str]) -> str:
 
 
 class TransferStatus(str, Enum):
+    """
+    Status of a file transfer operation.
+    """
     COPIED = "copied"
     MOVED = "moved"
     SKIPPED = "skipped"
@@ -78,6 +85,9 @@ class TransferStatus(str, Enum):
 
 @dataclass
 class TransferResult:
+    """
+    Result of a single file processing operation.
+    """
     source_path: Path
     status: TransferStatus
     message: str
@@ -87,6 +97,10 @@ class TransferResult:
 
 
 class MediaOrganizer:
+    """
+    Main class for organizing media files.
+    """
+
     def __init__(
         self,
         config: OrganizerConfig,
